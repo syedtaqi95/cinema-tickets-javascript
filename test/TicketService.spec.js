@@ -8,13 +8,13 @@ const requests = []
 
 describe('TicketService:', () => {
 
-  it('contains a public purchaseTickets() function', () => {
+  it('contains a public purchaseTickets() method', () => {
     expect(ticketService.purchaseTickets).toBeInstanceOf(Function)
   })
 
   it('throws an InvalidPurchaseException if accountId is not a number', () => {
     expect(() => {
-      ticketService.purchaseTickets('4', null)
+      ticketService.purchaseTickets('id2', null)
     }).toThrow(InvalidPurchaseException)
   })
 
