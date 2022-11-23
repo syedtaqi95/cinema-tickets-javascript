@@ -7,6 +7,6 @@ const ticketService = new TicketService();
 describe('TicketService:', () => {
 
   it('contains a public purchaseTickets() function', () => {
-    expect(typeof ticketService.purchaseTickets).toBe('function')
+    expect(ticketService.purchaseTickets).toBeInstanceOf(Function)
   })
 })
