@@ -4,7 +4,6 @@ import InvalidPurchaseException from "../src/pairtest/lib/InvalidPurchaseExcepti
 
 // Create objects for testing
 const ticketService = new TicketService();
-const requests = []
 
 describe('TicketService:', () => {
 

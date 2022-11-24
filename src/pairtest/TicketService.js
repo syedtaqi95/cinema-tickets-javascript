@@ -7,9 +7,15 @@ export default class TicketService {
    */
   #isValidAccountId = (id) => Number.isInteger(id) && id > 0;
 
-  purchaseTickets(accountId, ...ticketTypeRequests) {    
+  #ticketPrices = {
+    'ADULT': 20,
+    'INFANT': 0,
+    'CHILD': 10
+  }
+
+  purchaseTickets(accountId, ...ticketTypeRequests) {
     // validate accountId input
-    if(!this.#isValidAccountId(accountId)) {
+    if (!this.#isValidAccountId(accountId)) {
       throw new InvalidPurchaseException('accountId must be a positive integer');
     }
   }
