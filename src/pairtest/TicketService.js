@@ -8,10 +8,10 @@ export default class TicketService {
    * Should only have private methods other than the one below.
    */
   purchaseTickets(accountId, ...ticketTypeRequests) {
-    let numTickets = 0;
-    let numSeats = 0;
-    let totalCost = 0;
-    let purchasedAdultTicket = false;
+    let numTickets = 0; // total number of tickets
+    let numSeats = 0; // total number of seats
+    let totalCost = 0; // total cost of the ticket requests
+    let purchasedAdultTicket = false; // flag to indicate that an adult ticket was purchased
 
     // Validate accountId
     if (!this.#isValidAccountId(accountId)) {
@@ -22,10 +22,10 @@ export default class TicketService {
     ticketTypeRequests.map(ticketRequest => {
       // Validate ticket request type
       if (!this.#isValidTicketTypeRequest(ticketRequest, numTickets)) {
-        throw new InvalidPurchaseException('ticket request must be an object of class TicketTypeRequest');
+        throw new InvalidPurchaseException('ticket request must be of type TicketTypeRequest');
       }
 
-      const requestedTickets = ticketRequest.getNoOfTickets();
+      const requestedNoOfTickets = ticketRequest.getNoOfTickets();
       const requestedTicketType = ticketRequest.getTicketType();
 
       // If adult ticket, set flag to true
@@ -35,10 +35,10 @@ export default class TicketService {
 
       // Add seats if not Infant ticket(s)
       if (requestedTicketType !== 'INFANT') {
-        numSeats += requestedTickets;
+        numSeats += requestedNoOfTickets;
       }
-      numTickets += requestedTickets;
-      totalCost += requestedTickets * this.#ticketPrices[requestedTicketType];
+      numTickets += requestedNoOfTickets;
+      totalCost += requestedNoOfTickets * this.#ticketPrices[requestedTicketType];
     });
 
     // Validate number of tickets
