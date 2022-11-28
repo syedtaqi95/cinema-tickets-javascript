@@ -58,6 +58,11 @@ describe('TicketService:', () => {
     expect(ticketService.purchaseTickets(1, ticketReq)).toEqual({ numSeats: 2, totalCost: 40 });
   });
 
-
+  it('is successful if 1 Adult, 1 Infant, 1 Child tickets are purchased', () => {
+    const ticketReq1 = new TicketTypeRequest('ADULT', 1);
+    const ticketReq2 = new TicketTypeRequest('INFANT', 1);
+    const ticketReq3 = new TicketTypeRequest('CHILD', 1);
+    expect(ticketService.purchaseTickets(1, ticketReq1, ticketReq2, ticketReq3)).toEqual({ numSeats: 2, totalCost: 30 });
+  });
 
 });
