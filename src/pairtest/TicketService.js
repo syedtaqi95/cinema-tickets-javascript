@@ -8,8 +8,6 @@ export default class TicketService {
    * Should only have private methods other than the one below.
    */
   purchaseTickets(accountId, ...ticketTypeRequests) {
-    const ticketPaymentService = new TicketPaymentService();
-    const seatReservationService = new SeatReservationService();
     let numTickets = 0;
     let numSeats = 0;
     let totalCost = 0;
@@ -21,12 +19,12 @@ export default class TicketService {
     }
 
     // Calculate total cost and number of seats
-    ticketTypeRequests.map(ticketRequest => {      
+    ticketTypeRequests.map(ticketRequest => {
       // Validate ticket request type
       if (!this.#isValidTicketTypeRequest(ticketRequest, numTickets)) {
         throw new InvalidPurchaseException('ticket request must be an object of class TicketTypeRequest');
       }
-      
+
       const requestedTickets = ticketRequest.getNoOfTickets();
       const requestedTicketType = ticketRequest.getTicketType();
 
@@ -52,6 +50,12 @@ export default class TicketService {
     if (!purchasedAdultTicket) {
       throw new InvalidPurchaseException('Child or Infant tickets cannot be purchased without an Adult ticket');
     }
+
+    // Request seat reservations and process payment
+    const seatReservationService = new SeatReservationService();
+    const ticketPaymentService = new TicketPaymentService();
+    seatReservationService.reserveSeat(accountId, numSeats);
+    ticketPaymentService.makePayment(accountId, totalCost);
 
     return {
       numSeats,
