@@ -15,42 +15,58 @@ export default class TicketService {
     let totalCost = 0;
     let purchasedAdultTicket = false;
 
-    // Validate accountId input
+    // Validate accountId
     if (!this.#isValidAccountId(accountId)) {
       throw new InvalidPurchaseException('accountId must be a positive integer');
     }
 
-    ticketTypeRequests.map(ticketRequest => {
+    // Calculate total cost and number of seats
+    ticketTypeRequests.map(ticketRequest => {      
       // Validate ticket request type
       if (!this.#isValidTicketTypeRequest(ticketRequest, numTickets)) {
         throw new InvalidPurchaseException('ticket request must be an object of class TicketTypeRequest');
       }
-
-      // Validate number of tickets
-      numTickets += ticketRequest.getNoOfTickets();
-      if (!this.#isValidNumTickets(numTickets)) {
-        throw new InvalidPurchaseException(`maximum of ${this.#MAX_TICKETS} tickets can be purchased at a time`);
-      }
+      
+      const requestedTickets = ticketRequest.getNoOfTickets();
+      const requestedTicketType = ticketRequest.getTicketType();
 
       // If adult ticket, set flag to true
-      if (ticketRequest.getTicketType() === 'ADULT') {
+      if (requestedTicketType === 'ADULT') {
         purchasedAdultTicket = true;
       }
+
+      // Add seats if not Infant ticket(s)
+      if (requestedTicketType !== 'INFANT') {
+        numSeats += requestedTickets;
+      }
+      numTickets += requestedTickets;
+      totalCost += requestedTickets * this.#ticketPrices[requestedTicketType];
     });
 
-    // Throw error if no adult tickets were purchased
+    // Validate number of tickets
+    if (!this.#isValidNumTickets(numTickets)) {
+      throw new InvalidPurchaseException(`maximum of ${this.#MAX_TICKETS} tickets can be purchased at a time`);
+    }
+
+    // Validate at least 1 adult ticket was purchased
     if (!purchasedAdultTicket) {
       throw new InvalidPurchaseException('Child or Infant tickets cannot be purchased without an Adult ticket');
     }
 
-    return true;
+    return {
+      numSeats,
+      totalCost
+    };
   }
 
+  // Returns true if 'id' is a positive integer
   #isValidAccountId = (id) => Number.isInteger(id) && id > 0;
 
+  // Returns true if ticketReq is an object of type TicketTypeRequest
   #isValidTicketTypeRequest = (ticketReq) => ticketReq instanceof TicketTypeRequest;
 
-  #isValidNumTickets = (numTickets) => numTickets < this.#MAX_TICKETS;
+  // Returns true if numTickets a valid number of tickets to purchase
+  #isValidNumTickets = (numTickets) => numTickets >= 0 && numTickets < this.#MAX_TICKETS;
 
   #ticketPrices = {
     'ADULT': 20,

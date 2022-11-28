@@ -55,7 +55,7 @@ describe('TicketService:', () => {
 
   it('is successful if 2 Adult tickets are purchased', () => {
     const ticketReq = new TicketTypeRequest('ADULT', 2);
-    expect(ticketService.purchaseTickets(1, ticketReq)).toBe(true);
+    expect(ticketService.purchaseTickets(1, ticketReq)).toEqual({ numSeats: 2, totalCost: 40 });
   });
 
 
