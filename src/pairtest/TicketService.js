@@ -20,16 +20,15 @@ export default class TicketService {
       throw new InvalidPurchaseException('accountId must be a positive integer');
     }
 
-    // Validate each request and calculate totalCost and numSeats
     ticketTypeRequests.map(ticketRequest => {
-      // Reject if the request is not of type TicketTypeRequest
-      if (!(ticketRequest instanceof TicketTypeRequest)) {
+      // Validate ticket request type
+      if (!this.#isValidTicketTypeRequest(ticketRequest, numTickets)) {
         throw new InvalidPurchaseException('ticket request must be an object of class TicketTypeRequest');
       }
 
-      // Confirm number of tickets is valid
+      // Validate number of tickets
       numTickets += ticketRequest.getNoOfTickets();
-      if (numTickets > this.#MAX_TICKETS) {
+      if (!this.#isValidNumTickets(numTickets)) {
         throw new InvalidPurchaseException(`maximum of ${this.#MAX_TICKETS} tickets can be purchased at a time`);
       }
 
@@ -48,6 +47,10 @@ export default class TicketService {
   }
 
   #isValidAccountId = (id) => Number.isInteger(id) && id > 0;
+
+  #isValidTicketTypeRequest = (ticketReq) => ticketReq instanceof TicketTypeRequest;
+
+  #isValidNumTickets = (numTickets) => numTickets < this.#MAX_TICKETS;
 
   #ticketPrices = {
     'ADULT': 20,
