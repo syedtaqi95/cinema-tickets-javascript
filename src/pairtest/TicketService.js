@@ -28,6 +28,11 @@ export default class TicketService {
       const requestedNoOfTickets = ticketRequest.getNoOfTickets();
       const requestedTicketType = ticketRequest.getTicketType();
 
+      // Validate number of tickets
+      if (!this.#isValidNumTickets(numTickets)) {
+        throw new InvalidPurchaseException(`maximum of ${this.#MAX_TICKETS} tickets can be purchased at a time`);
+      }
+
       // If adult ticket, set flag to true
       if (requestedTicketType === 'ADULT') {
         purchasedAdultTicket = true;
@@ -41,7 +46,7 @@ export default class TicketService {
       totalCost += requestedNoOfTickets * this.#ticketPrices[requestedTicketType];
     });
 
-    // Validate number of tickets
+    // Ensure total number of tickets is valid
     if (!this.#isValidNumTickets(numTickets)) {
       throw new InvalidPurchaseException(`maximum of ${this.#MAX_TICKETS} tickets can be purchased at a time`);
     }
